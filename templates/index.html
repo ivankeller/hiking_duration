@@ -4,11 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hiking Duration Calculator</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <h1>Hiking Duration Calculator</h1>
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
         <label for="pos_vert_len">Positive Vertical Length (m):</label>
         <input type="number" id="pos_vert_len" name="pos_vert_len" step="any" value="{{ pos_vert_len }}" required><br>
 
@@ -27,11 +26,21 @@
         <label for="horiz_speed">Horizontal Speed (km/h):</label>
         <input type="number" id="horiz_speed" name="horiz_speed" step="any" value="{{ horiz_speed }}" required><br>
 
-        <label for="margin">Margin (%):</label>
-        <input type="number" id="margin" name="margin" step="any" value="{{ margin }}" required><br>
+        <label for="gpx_file">Upload GPX File:</label>
+        <input type="file" id="gpx_file" name="gpx_file" accept=".gpx"><br>
 
         <button type="submit">Calculate</button>
     </form>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
 
     {% if duration %}
         <h2>Total Duration: {{ duration }}</h2>

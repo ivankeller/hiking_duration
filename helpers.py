@@ -54,7 +54,7 @@ def analyze_gpx_trace(gpx_file):
             previous_point = None
             for point in segment.points:
                 if point.elevation is None:
-                    return
+                    return None
                 if previous_point:
                     # Calculate elevation gain/loss
                     elevation_change = point.elevation - previous_point.elevation
@@ -73,7 +73,7 @@ def analyze_gpx_trace(gpx_file):
     return {
         'positive_elevation': total_positive_elevation,
         'negative_elevation': - total_negative_elevation,
-        'total_distance': total_distance / 1000.0  # convert meters to kilometers
+        'total_distance': total_distance / 1000  # convert to km
     }
 
 def compute_duration(

@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, flash
 import gpxpy
+import os
 
 from helpers import (
     analyze_gpx_trace,
@@ -8,7 +9,7 @@ from helpers import (
 )
 
 app = Flask(__name__)
-app.secret_key = 'supersecretkey'  # Needed for flashing messages
+app.secret_key = os.getenv('FLASK_SECRET_KEY', 'defaultsecretkey')  # Use environment variable or default  # Needed for flashing messages
 
 from constants import (
     DEFAULT_POS_VERT_SPEED,
@@ -43,6 +44,7 @@ def index():
                 pos_vert_len = gpx_data["positive_elevation"]
                 neg_vert_len = gpx_data["negative_elevation"]
                 horiz_len = gpx_data["total_distance"]
+                flash(f'GPX Analysis: Positive Elevation: {pos_vert_len} m, Negative Elevation: {neg_vert_len} m, Horizontal Length: {horiz_len} km')
             else:   # there is no elevation data i nthe GPX
                 flash('The GPX file does not contain elevation data. Please enter the data manually.')
 

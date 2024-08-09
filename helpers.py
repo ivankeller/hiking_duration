@@ -3,6 +3,7 @@ import gpxpy
 import gpxpy.gpx
 from geopy.distance import geodesic
 from typing import (
+    Dict,
     Optional,
     Any
 )
@@ -32,7 +33,7 @@ def get_user_input(prompt: str, expected_type: Any, default : Optional[int] = No
                 print(f"Error casting value '{user_response}' to type '{expected_type}': {e}. Retry.")
 
 
-def analyze_gpx_trace(gpx_file):
+def analyze_gpx_trace(gpx_file) -> Dict[str, int]:
     """
     Analyzes a GPX file to calculate total positive elevation, negative elevation, and total distance.
     
@@ -45,9 +46,9 @@ def analyze_gpx_trace(gpx_file):
     """
     gpx = gpxpy.parse(gpx_file)
     
-    total_positive_elevation = 0.0
-    total_negative_elevation = 0.0
-    total_distance = 0.0
+    total_positive_elevation = 0
+    total_negative_elevation = 0
+    total_distance = 0
 
     for track in gpx.tracks:
         for segment in track.segments:
@@ -71,19 +72,19 @@ def analyze_gpx_trace(gpx_file):
                 previous_point = point
     
     return {
-        'positive_elevation': total_positive_elevation,
-        'negative_elevation': - total_negative_elevation,
-        'total_distance': total_distance / 1000  # convert to km
+        'positive_elevation': int(total_positive_elevation),
+        'negative_elevation': - int(total_negative_elevation),
+        'total_distance': int(total_distance / 1000)  # convert to km
     }
 
 def compute_duration(
-    pos_vert_len, 
-    neg_vert_len, 
-    pos_vert_speed,
-    neg_vert_speed,
-    horiz_len,
-    horiz_speed,
-    margin
+    pos_vert_len: int, 
+    neg_vert_len: int, 
+    pos_vert_speed: int, 
+    neg_vert_speed: int, 
+    horiz_len: int, 
+    horiz_speed: int, 
+    margin: int
 ) -> float:
     """Compute the total duration of the hike."""
     pos_vert_duration = pos_vert_len / pos_vert_speed
@@ -96,7 +97,8 @@ def compute_duration(
         pos_vert_duration + neg_vert_duration,
         horiz_duration
     )
-    total_duration_with_margin = (1 + margin) * total_duration
+    margin_factor = 1 +  margin / 100
+    total_duration_with_margin = margin_factor * total_duration
     return total_duration_with_margin
 
 def decimal_time_to_hours_minutes(time: float) -> str:

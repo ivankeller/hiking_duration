@@ -60,7 +60,7 @@ def main(gpx_file_path=None):
         f"Margin (%)= {DEFAULT_MARGIN}%:",
         int,
         default=DEFAULT_MARGIN
-    ) / 100
+    )
     
     duration = compute_duration(
         pos_vert_len, 
@@ -73,6 +73,17 @@ def main(gpx_file_path=None):
     )
     duration_format = decimal_time_to_hours_minutes(duration)
     print(f"Total duration = {duration_format}.")
+    print()
+    pt = pos_vert_len/pos_vert_speed
+    nt = neg_vert_len/neg_vert_speed
+    ht = horiz_len/horiz_speed
+    print("Detail of the calculation:")
+    print(f"Positive elevation time (pt): {pt:.1f} h")
+    print(f"Negative elevation time (nt): {nt:.1f} h")
+    print(f"horizontal time (ht): {ht:.1f} h")
+    print(f"Walking duration = Max(pt + nt, ht) + 0.5 * Min(pt + nt, ht)")
+    print(f"Walking duration = Max({pt:.1f} + {nt:.1f}, {ht:.1f}) + 0.5 * Min({pt:.1f} + {nt:.1f}, {ht:.1f})")
+    print(f"Total duration (with margin) = {1 + margin / 100:.2f} * Walking duration = {duration_format}")
 
 
 if __name__ == "__main__":

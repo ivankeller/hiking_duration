@@ -9,7 +9,7 @@ from helpers import (
 )
 
 app = Flask(__name__)
-app.secret_key = os.getenv('FLASK_SECRET_KEY', 'defaultsecretkey')  # Use environment variable or default  # Needed for flashing messages
+app.secret_key = os.getenv('FLASK_SECRET_KEY', 'defaultsecretkey')  # Use environment variable or default; needed for flashing messages
 
 from constants import (
     DEFAULT_POS_VERT_SPEED,
@@ -29,13 +29,13 @@ def index():
     margin = DEFAULT_MARGIN
 
     if request.method == 'POST':
-        pos_vert_len = float(request.form.get('pos_vert_len', 0))
-        neg_vert_len = float(request.form.get('neg_vert_len', 0))
-        pos_vert_speed = float(request.form.get('pos_vert_speed', DEFAULT_POS_VERT_SPEED))
-        neg_vert_speed = float(request.form.get('neg_vert_speed', DEFAULT_NEG_VERT_SPEED))
-        horiz_len = float(request.form.get('horiz_len', 0))
-        horiz_speed = float(request.form.get('horiz_speed', DEFAULT_HORIZ_SPEED))
-        margin = float(request.form.get('margin', DEFAULT_MARGIN)) / 100
+        pos_vert_len = int(request.form.get('pos_vert_len', 0))
+        neg_vert_len = int(request.form.get('neg_vert_len', 0))
+        pos_vert_speed = int(request.form.get('pos_vert_speed', DEFAULT_POS_VERT_SPEED))
+        neg_vert_speed = int(request.form.get('neg_vert_speed', DEFAULT_NEG_VERT_SPEED))
+        horiz_len = int(request.form.get('horiz_len', 0))
+        horiz_speed = int(request.form.get('horiz_speed', DEFAULT_HORIZ_SPEED))
+        margin = int(request.form.get('margin', DEFAULT_MARGIN))
 
         gpx_file = request.files.get('gpx_file')
         if gpx_file:
@@ -45,8 +45,9 @@ def index():
                 neg_vert_len = gpx_data["negative_elevation"]
                 horiz_len = gpx_data["total_distance"]
                 flash(f'GPX Analysis: Positive Elevation: {pos_vert_len} m, Negative Elevation: {neg_vert_len} m, Horizontal Length: {horiz_len} km')
-            else:   # there is no elevation data i nthe GPX
-                flash('The GPX file does not contain elevation data. Please enter the data manually.')
+            else:   
+                # there is no elevation data i nthe GPX
+                flash('The GPX file does not contain elevation data. Provide the data manually.')
 
         duration = compute_duration(
             pos_vert_len, 
@@ -57,11 +58,11 @@ def index():
             horiz_speed,
             margin
         )
-        duration_format = decimal_time_to_hours_minutes(duration)
-        return render_template('index.html', duration=duration_format, 
+        duration_formatted = decimal_time_to_hours_minutes(duration)
+        return render_template('index.html', duration=duration_formatted, 
                                pos_vert_len=pos_vert_len, neg_vert_len=neg_vert_len,
                                pos_vert_speed=pos_vert_speed, neg_vert_speed=neg_vert_speed,
-                               horiz_len=horiz_len, horiz_speed=horiz_speed, margin=margin * 100)
+                               horiz_len=horiz_len, horiz_speed=horiz_speed, margin=margin)
 
     return render_template('index.html', duration=None, 
                            pos_vert_len=pos_vert_len, neg_vert_len=neg_vert_len,

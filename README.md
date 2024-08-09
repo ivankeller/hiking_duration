@@ -1,8 +1,12 @@
 # Hiking Duration Calculator
 
-This script calculates the total duration of a hiking trip based on various parameters such as vertical and horizontal lengths and speeds. It can optionally process a GPX file to extract these parameters.
+This little app calculates the total duration of a hiking trip based on various parameters such as vertical elevations and horizontal distance and speeds. Optionally process a GPX file with elevation data to extract these parameters.
+
+The app has two flavors: an interractive question-answers in command line or a simple web app.  
 
 ## Requirements
+
+The app was successfully tested on Python 3.10. 
 
 The following Python packages are required to run the script:
 
@@ -10,25 +14,36 @@ The following Python packages are required to run the script:
 - `geopy==2.4.1`
 - `gpxpy==1.6.2`
 
-You can install these dependencies using the following command:
+You can install these dependencies using the following usual pip command:
 
-```
+```bash
 pip install -r requirements.txt
 ```
 
 ## Usage
 
-To run the script, you can provide the path to a GPX file as an optional argument. If no GPX file is provided, the script will use default values for the parameters.
+### Running the web app
 
-```
-python hiking_duration.py [gpx_file_path]
+execute in a terminal:
+
+```bash
+python app.py
 ```
 
-### Arguments
+and use your favourite browser to go to the URL http://127.0.0.1:5000/ .
+
+### Running in command line
+
+do: 
+```
+python hiking_duration.py [--test] [gpx_file_path] 
+```
+
+**Arguments*:*
 
 - `gpx_file_path` (optional): Path to the GPX file to be processed.
 
-### Options
+#### Options
 
 - `--test`: Run tests.
 

@@ -17,31 +17,15 @@ class TestHikingDuration(unittest.TestCase):
             self.assertEqual(result, 10)
 
     def test_analyze_gpx_trace(self):
-        gpx_file_path = "test.gpx"
+        gpx_file_path = "./gpx_files/test.gpx"
         expected_result = {
             'positive_elevation': 1000.0,
             'negative_elevation': 500.0,
             'total_distance': 0.0
         }
-        with patch('builtins.open', return_value=StringIO(
-            """<gpx>
-                <trk>
-                    <trkseg>
-                        <trkpt lat="0" lon="0">
-                            <ele>0</ele>
-                        </trkpt>
-                        <trkpt lat="0" lon="0">
-                            <ele>1000</ele>
-                        </trkpt>
-                        <trkpt lat="0" lon="0">
-                            <ele>500</ele>
-                        </trkpt>
-                    </trkseg>
-                </trk>
-            </gpx>"""
-        )):
-            result = analyze_gpx_trace(gpx_file_path)
-            self.assertDictEqual(result, expected_result)
+        with open(gpx_file_path, 'r') as gpx_file:
+            result = analyze_gpx_trace(gpx_file)
+        self.assertDictEqual(result, expected_result)
 
     def test_compute_duration(self):
         pos_vert_len = 900
@@ -50,7 +34,7 @@ class TestHikingDuration(unittest.TestCase):
         neg_vert_speed = 500
         horiz_len = 10
         horiz_speed = 5
-        margin = 0.2
+        margin = 20
         expected_result = 6.0
         result = compute_duration(
             pos_vert_len, 
@@ -78,7 +62,8 @@ class TestHikingDuration(unittest.TestCase):
         with patch('builtins.input', side_effect=['900', '500', '10', '300', '500', '5', '20']):
             with patch('builtins.print') as mock_print:
                 main()
-                mock_print.assert_called_with("Total duration = 6 h 0 min.")
+                expected = 'Total duration (with margin) = 1.20 * Walking duration = 6 h 0 min'
+                mock_print.assert_called_with(expected)
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
